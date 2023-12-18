@@ -1,0 +1,13 @@
+# run ./app and map ports 2020:2020
+
+version: "3.9"
+services:
+  web:
+    ports:
+      - "2020:2020"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    container_name: "app"
