@@ -194,10 +194,10 @@ async fn main() -> std::io::Result<()> {
         App::new().wrap(cors)
         
         .route("/static/{file:.*}", web::get().to(static_media))
-        .route("/icons/{file:.*}", web::get().to(icons))
         .service(
             web::scope(scope)
-                // .route("/", web::get().to(index))
+            // .route("/", web::get().to(index))
+                .route("/icons/{file:.*}", web::get().to(icons))
                 .route("/version", web::get().to(version))
                 .route(
                     "",
