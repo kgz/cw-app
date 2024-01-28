@@ -197,7 +197,8 @@ async fn main() -> std::io::Result<()> {
                     web::get().to(templates::fourofour::four_o_four),
                 ),
         )
-
+        .route("/static/{file:.*}", web::get().to(static_media))
+        .route("/icons/{file:.*}", web::get().to(icons))
         // add localhost-key.pem and localhost.pem to root
         // .service(fs::Files::new("/", "./static/").index_file("index.html"))
     });
