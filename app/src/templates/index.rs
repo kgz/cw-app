@@ -50,7 +50,7 @@ pub async fn index(req: HttpRequest, routes: HashMap<&'static str, Route>) -> Re
                         "))
                     }
                     script defer type="module" src="https://localhost:3000/src/index.tsx" {}
-                } else {
+                } @else {
                     script src="/static/index.min.js" {}
                 }
 
@@ -76,7 +76,7 @@ pub async fn index(req: HttpRequest, routes: HashMap<&'static str, Route>) -> Re
                     meta name="twitter:domain" content="matf.dev" {}
                     meta name="twitter:label1" content="Written in" {}
                     meta name="twitter:data1" content="Rust" {}
-                } else {
+                } @else {
                     meta name="description" content="404" {}
                 }
 

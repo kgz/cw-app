@@ -16,15 +16,27 @@ pub mod data {
     automod::dir!(pub "./src/data");
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Debug)]
 pub enum Environments {
     DEV,
     TEST,
     PROD,
 }
 
+impl std::fmt::Display for Environments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            Environments::DEV => write!(f, "dev"),
+            Environments::TEST => write!(f, "test"),
+            Environments::PROD => write!(f, "prod"),
+        }
+    }
+}
+
 const IS_DEBUG: bool = !!cfg!(debug_assertions);
 
+
+#[derive(Debug)]
 pub struct Env<'a> {
     pub env: Environments,
     pub auto_login_id: &'a str,
@@ -38,6 +50,8 @@ pub const APP_ENV: Env = Env {
     },
     auto_login_id: "1",
 };
+
+
 
 // async fn index(_: HttpRequest) -> Result<fs::NamedFile> {
 //     Ok(NamedFile::open("static/index.html")?)
@@ -148,9 +162,7 @@ async fn version(_: HttpRequest) -> Result<String> {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    if APP_ENV.env == Environments::DEV {
-        println!("App is running in development mode");
-    }
+    println!("App is running in {} mode", APP_ENV.env);
 
     let cert_file = std::env::current_dir().unwrap().join("localhost.pem");
     let key_file = std::env::current_dir().unwrap().join("localhost-key.pem");
