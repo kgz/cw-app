@@ -158,7 +158,12 @@ async fn main() -> std::io::Result<()> {
     // set arg default value
 
     let cert_config = load_certs(cert_file, key_file).unwrap();
-
+    let scope = match APP_ENV.env {
+        Environments::DEV => "/chaos",
+        Environments::PROD => "/",
+        Environments::TEST => "/",
+        _ => panic!("Could not start server"),
+    };
     let server = HttpServer::new(|| {
         let cors = Cors::default()
             .allowed_origin("https://localhost")
@@ -169,7 +174,7 @@ async fn main() -> std::io::Result<()> {
             .max_age(3600);
 
         App::new().wrap(cors).service(
-            web::scope("/chaos")
+            web::scope(scope)
                 // .route("/", web::get().to(index))
                 .route(
                     "/{path}",
