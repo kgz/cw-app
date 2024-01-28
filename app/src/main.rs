@@ -166,6 +166,13 @@ async fn version(_: HttpRequest) -> Result<String> {
     Ok("0.0.1".to_string())
 }
 
+pub const SCOPE: &str = match APP_ENV.env {
+    Environments::DEV => "/chaos",
+    Environments::PROD => "",
+    Environments::TEST => "/",
+    _ => panic!("Could not start server"),
+};
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     println!("App is running in {} mode", APP_ENV.env);
@@ -176,12 +183,7 @@ async fn main() -> std::io::Result<()> {
     // set arg default value
 
     let cert_config = load_certs(cert_file, key_file).unwrap();
-    let scope = match APP_ENV.env {
-        Environments::DEV => "/chaos",
-        Environments::PROD => "",
-        Environments::TEST => "/",
-        _ => panic!("Could not start server"),
-    };
+
     let server = HttpServer::new(|| {
         let cors = Cors::default()
             .allowed_origin("https://localhost")
@@ -195,7 +197,7 @@ async fn main() -> std::io::Result<()> {
         
         .route("/static/{file:.*}", web::get().to(static_media))
         .service(
-            web::scope(scope)
+            web::scope(SCOPE)
             // .route("/", web::get().to(index))
                 .route("/icons/{file:.*}", web::get().to(icons))
                 .route("/version", web::get().to(version))

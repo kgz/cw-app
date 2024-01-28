@@ -8,6 +8,7 @@ use maud::{html, Markup};
 use crate::data::routes::Route;
 use crate::Environments;
 use crate::APP_ENV;
+use crate::SCOPE;
 
 pub async fn index(req: HttpRequest, routes: HashMap<&'static str, Route>) -> Result<Markup> {
     let params = req.path().split("/").collect::<Vec<&str>>();
@@ -27,7 +28,7 @@ pub async fn index(req: HttpRequest, routes: HashMap<&'static str, Route>) -> Re
         None => "404".to_string(),
     };
     let imageUrl = match current_route {
-        Some(route) => format!("https://matf.dev/icons/{}.png", path),
+        Some(route) => format!("https://matf.dev{}/icons/{}.png", SCOPE, path),
         None => "https://matf.dev/static/404.png".to_string(),
     };
 
