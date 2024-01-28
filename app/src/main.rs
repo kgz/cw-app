@@ -208,6 +208,12 @@ async fn main() -> std::io::Result<()> {
                     }),
                 )
                 .route(
+                    "/",
+                    web::get().to(|req: HttpRequest| {
+                        templates::index::index(req, data::routes::get_routes())
+                    }),
+                )
+                .route(
                     "/{path}",
                     web::get().to(|req: HttpRequest| {
                         templates::index::index(req, data::routes::get_routes())

@@ -8,7 +8,6 @@ use maud::{html, Markup};
 use crate::data::routes::Route;
 use crate::Environments;
 use crate::APP_ENV;
-use crate::SCOPE;
 
 pub async fn index(req: HttpRequest, routes: HashMap<&'static str, Route>) -> Result<Markup> {
     let params = req.path().split("/").collect::<Vec<&str>>();
@@ -27,7 +26,7 @@ pub async fn index(req: HttpRequest, routes: HashMap<&'static str, Route>) -> Re
         ),
         None => "404".to_string(),
     };
-    let imageUrl = match current_route {
+    let image_url = match current_route {
         Some(route) => format!("https://matf.dev/chaos/icons/{}.png", path),
         None => "https://matf.dev/static/404.png".to_string(),
     };
@@ -65,7 +64,7 @@ pub async fn index(req: HttpRequest, routes: HashMap<&'static str, Route>) -> Re
                     meta name="og:title" content=(path.replace("_", " ")) {}
                     meta name="og:type" content="website" {}
                     meta name="og:url" content="https://matf.dev" {}
-                    meta name="og:image" content=(imageUrl) {}
+                    meta name="og:image" content=(image_url) {}
                     meta name="og:description" content=(current_route.unwrap().description) {}
                     meta name="og:site_name" content="matf.dev" {}
                     meta name="twitter:card" content="summary_large_image" {}
@@ -73,7 +72,7 @@ pub async fn index(req: HttpRequest, routes: HashMap<&'static str, Route>) -> Re
                     meta name="twitter:creator" content="@matf_dev" {}
                     meta name="twitter:title" content=(path.replace("_", " ")) {}
                     meta name="twitter:description" content=(current_route.unwrap().description) {}
-                    meta name="twitter:image" content=(imageUrl) {}
+                    meta name="twitter:image" content=(image_url) {}
                     meta name="twitter:image:alt" content=(current_route.unwrap().description) {}
                     meta name="twitter:domain" content="matf.dev" {}
                     meta name="twitter:label1" content="Written in" {}
