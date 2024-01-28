@@ -172,7 +172,7 @@ async fn main() -> std::io::Result<()> {
     let cert_config = load_certs(cert_file, key_file).unwrap();
     let scope = match APP_ENV.env {
         Environments::DEV => "/chaos",
-        Environments::PROD => "/",
+        Environments::PROD => "",
         Environments::TEST => "/",
         _ => panic!("Could not start server"),
     };
@@ -190,13 +190,13 @@ async fn main() -> std::io::Result<()> {
                 // .route("/", web::get().to(index))
                 .route("/version", web::get().to(version))
                 .route(
-                    "/{path}",
+                    "",
                     web::get().to(|req: HttpRequest| {
                         templates::index::index(req, data::routes::get_routes())
                     }),
                 )
                 .route(
-                    "/",
+                    "/{path}",
                     web::get().to(|req: HttpRequest| {
                         templates::index::index(req, data::routes::get_routes())
                     }),
