@@ -160,7 +160,7 @@ async fn main() -> std::io::Result<()> {
     let cert_config = load_certs(cert_file, key_file).unwrap();
     let scope = match APP_ENV.env {
         Environments::DEV => "/chaos",
-        Environments::PROD => "/",
+        Environments::PROD => "/chaos",
         Environments::TEST => "/",
         _ => panic!("Could not start server"),
     };
@@ -176,6 +176,7 @@ async fn main() -> std::io::Result<()> {
         App::new().wrap(cors).service(
             web::scope(scope)
                 // .route("/", web::get().to(index))
+                .route("/version", web::get().to(version))
                 .route(
                     "/{path}",
                     web::get().to(|req: HttpRequest| {
@@ -194,7 +195,6 @@ async fn main() -> std::io::Result<()> {
                     "/{tail:.*}",
                     web::get().to(templates::fourofour::four_o_four),
                 )
-                .route("/version", web::get().to(version))
                 .route("/static/{file:.*}", web::get().to(static_media))
                 .route("/icons/{file:.*}", web::get().to(icons))
                 .route(
