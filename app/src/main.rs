@@ -35,7 +35,6 @@ impl std::fmt::Display for Environments {
 
 const IS_DEBUG: bool = !!cfg!(debug_assertions);
 
-
 #[derive(Debug)]
 pub struct Env<'a> {
     pub env: Environments,
@@ -51,8 +50,6 @@ pub const APP_ENV: Env = Env {
     auto_login_id: "1",
 };
 
-
-
 // async fn index(_: HttpRequest) -> Result<fs::NamedFile> {
 //     Ok(NamedFile::open("static/index.html")?)
 // }
@@ -64,7 +61,7 @@ async fn static_media(req: HttpRequest) -> Result<fs::NamedFile> {
 }
 
 /**
- * 
+ *
  */
 async fn icons(req: HttpRequest) -> Result<fs::NamedFile> {
     let file = req.match_info().get("file").unwrap();
@@ -177,12 +174,7 @@ pub const SCOPE: &str = match APP_ENV.env {
 async fn main() -> std::io::Result<()> {
     println!("App is running in {} mode", APP_ENV.env);
 
-    let cert_file = std::env::current_dir().unwrap().join("localhost.pem");
-    let key_file = std::env::current_dir().unwrap().join("localhost-key.pem");
-
     // set arg default value
-
-    let cert_config = load_certs(cert_file, key_file).unwrap();
 
     let server = HttpServer::new(|| {
         let cors = Cors::default()
@@ -193,53 +185,60 @@ async fn main() -> std::io::Result<()> {
             .allowed_header(http::header::CONTENT_TYPE)
             .max_age(3600);
 
-        App::new().wrap(cors)
-        
-        .route("/static/{file:.*}", web::get().to(static_media))
-        .service(
-            web::scope(SCOPE)
-            // .route("/", web::get().to(index))
-                .route("/icons/{file:.*}", web::get().to(icons))
-                .route("/version", web::get().to(version))
-                .route(
-                    "",
-                    web::get().to(|req: HttpRequest| {
-                        templates::index::index(req, data::routes::get_routes())
-                    }),
-                )
-                .route(
-                    "/",
-                    web::get().to(|req: HttpRequest| {
-                        templates::index::index(req, data::routes::get_routes())
-                    }),
-                )
-                .route(
-                    "/{path}",
-                    web::get().to(|req: HttpRequest| {
-                        templates::index::index(req, data::routes::get_routes())
-                    }),
-                )
-                // static media
-                // dummy data
-                .route(
-                    "/{tail:.*}",
-                    web::get().to(templates::fourofour::four_o_four),
-                )
-                .route("/static/{file:.*}", web::get().to(static_media))
-                .route("/icons/{file:.*}", web::get().to(icons))
-                .route(
-                    "/{tail:.*}",
-                    web::get().to(templates::fourofour::four_o_four),
-                ),
-        )
-        
+        App::new()
+            .wrap(cors)
+            .route("/static/{file:.*}", web::get().to(static_media))
+            .service(
+                web::scope(SCOPE)
+                    // .route("/", web::get().to(index))
+                    .route("/icons/{file:.*}", web::get().to(icons))
+                    .route("/version", web::get().to(version))
+                    .route(
+                        "",
+                        web::get().to(|req: HttpRequest| {
+                            templates::index::index(req, data::routes::get_routes())
+                        }),
+                    )
+                    .route(
+                        "/",
+                        web::get().to(|req: HttpRequest| {
+                            templates::index::index(req, data::routes::get_routes())
+                        }),
+                    )
+                    .route(
+                        "/{path}",
+                        web::get().to(|req: HttpRequest| {
+                            templates::index::index(req, data::routes::get_routes())
+                        }),
+                    )
+                    // static media
+                    // dummy data
+                    .route(
+                        "/{tail:.*}",
+                        web::get().to(templates::fourofour::four_o_four),
+                    )
+                    .route("/static/{file:.*}", web::get().to(static_media))
+                    .route("/icons/{file:.*}", web::get().to(icons))
+                    .route(
+                        "/{tail:.*}",
+                        web::get().to(templates::fourofour::four_o_four),
+                    ),
+            )
+
         // add localhost-key.pem and localhost.pem to root
         // .service(fs::Files::new("/", "./static/").index_file("index.html"))
     });
-    // .bind("0.0.0.0:2020")?;
+    // .bind("0.0.0.0:2020")?;    let cert_config =
 
     let server = match APP_ENV.env {
-        Environments::DEV => server.bind_rustls("0.0.0.0:2020", cert_config)?,
+        Environments::DEV => server.bind_rustls(
+            "0.0.0.0:2020",
+            load_certs(
+                std::env::current_dir().unwrap().join("localhost.pem"),
+                std::env::current_dir().unwrap().join("localhost-key.pem"),
+            )
+            .unwrap(),
+        )?,
         Environments::PROD => server.bind("0.0.0.0:2020")?,
         Environments::TEST => todo!(),
         _ => panic!("Could not start server"),
