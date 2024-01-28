@@ -63,9 +63,15 @@ async fn static_media(req: HttpRequest) -> Result<fs::NamedFile> {
     Ok(NamedFile::open(path)?)
 }
 
+/**
+ * 
+ */
 async fn icons(req: HttpRequest) -> Result<fs::NamedFile> {
     let file = req.match_info().get("file").unwrap();
-    let path = format!("data/{}", file);
+    // make safe
+    let file_safe = file.replace("..", "");
+    let path = format!("src/data/images/{}", file_safe);
+    println!("{:?}", path);
     Ok(NamedFile::open(path)?)
 }
 

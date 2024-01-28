@@ -87,16 +87,16 @@ pub async fn index(req: HttpRequest, routes: HashMap<&'static str, Route>) -> Re
                 // p { "path: " (path) }
                 // p { "is_debug: " (is_debug) }
                 div id="root" {}
-                div {
-                    routes {
-                        @for (key, value) in routes {
-                            div {
-                                h1 { (key) }
-                                p { (value.description) }
-                            }
-                        }
-                    }
-                }
+                // div {
+                //     routes {
+                //         @for (key, value) in routes {
+                //             div {
+                //                 h1 { (key) }
+                //                 p { (value.description) }
+                //             }
+                //         }
+                //     }
+                // }
             }
         }
     ))
