@@ -202,11 +202,19 @@ async fn main() -> std::io::Result<()> {
             )
         // add localhost-key.pem and localhost.pem to root
         // .service(fs::Files::new("/", "./static/").index_file("index.html"))
-    })
+    });
     // .bind("0.0.0.0:2020")?;
-    .bind_rustls("0.0.0.0:2020", cert_config)?;
+
+     let server = match APP_ENV.env {
+        Environments::DEV => server.bind_rustls("0.0.0.0:2020", cert_config)?,
+        Environments::PROD =>  server.bind("0.0.0.0:2020")?,
+        Environments::TEST => todo!(),
+        _ => panic!("Could not start server"),
+    };
 
     // print server url
     println!("Server running at https://localhost:2020/");
     server.run().await
+        
+   
 }
