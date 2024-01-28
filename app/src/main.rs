@@ -142,7 +142,7 @@ fn load_certs(cert: PathBuf, key: PathBuf) -> Result<ServerConfig, String> {
         .map_err(|e| e.to_string())
 }
 
-async fn version (_: HttpRequest) -> Result<String> {
+async fn version(_: HttpRequest) -> Result<String> {
     Ok("0.0.1".to_string())
 }
 
@@ -168,13 +168,9 @@ async fn main() -> std::io::Result<()> {
             .allowed_header(http::header::CONTENT_TYPE)
             .max_age(3600);
 
-        App::new()
-            .wrap(cors)
-         
-            // .service(
-                // web::scope("/chaos")
-                //     // .route("/", web::get().to(index))
-                // )
+        App::new().wrap(cors).service(
+            web::scope("/chaos")
+                // .route("/", web::get().to(index))
                 .route(
                     "/{path}",
                     web::get().to(|req: HttpRequest| {
@@ -193,21 +189,23 @@ async fn main() -> std::io::Result<()> {
                     "/{tail:.*}",
                     web::get().to(templates::fourofour::four_o_four),
                 )
-                .route("/version",  web::get().to(version))
-            .route("/static/{file:.*}", web::get().to(static_media))
-            .route("/icons/{file:.*}", web::get().to(icons))
-            .route(
-                "/{tail:.*}",
-                web::get().to(templates::fourofour::four_o_four),
-            )
+                .route("/version", web::get().to(version))
+                .route("/static/{file:.*}", web::get().to(static_media))
+                .route("/icons/{file:.*}", web::get().to(icons))
+                .route(
+                    "/{tail:.*}",
+                    web::get().to(templates::fourofour::four_o_four),
+                ),
+        )
+
         // add localhost-key.pem and localhost.pem to root
         // .service(fs::Files::new("/", "./static/").index_file("index.html"))
     });
     // .bind("0.0.0.0:2020")?;
 
-     let server = match APP_ENV.env {
+    let server = match APP_ENV.env {
         Environments::DEV => server.bind_rustls("0.0.0.0:2020", cert_config)?,
-        Environments::PROD =>  server.bind("0.0.0.0:2020")?,
+        Environments::PROD => server.bind("0.0.0.0:2020")?,
         Environments::TEST => todo!(),
         _ => panic!("Could not start server"),
     };
@@ -215,6 +213,4 @@ async fn main() -> std::io::Result<()> {
     // print server url
     println!("Server running at https://localhost:2020/");
     server.run().await
-        
-   
 }
