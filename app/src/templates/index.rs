@@ -51,7 +51,8 @@ pub async fn index(req: HttpRequest, routes: HashMap<&'static str, Route>) -> Re
                     }
                     script defer type="module" src="https://localhost:3000/src/index.tsx" {}
                 } @else {
-                    script src="/static/index.min.js" {}
+                    script defer src="/static/index.min.js" {}
+                    link rel="stylesheet" href="/static/index.min.css" {}
                 }
 
                 @if current_route.is_some() {
