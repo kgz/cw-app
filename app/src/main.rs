@@ -142,6 +142,10 @@ fn load_certs(cert: PathBuf, key: PathBuf) -> Result<ServerConfig, String> {
         .map_err(|e| e.to_string())
 }
 
+async fn version (_: HttpRequest) -> Result<String> {
+    Ok("0.0.1".to_string())
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     if APP_ENV.env == Environments::DEV {
@@ -166,6 +170,7 @@ async fn main() -> std::io::Result<()> {
 
         App::new()
             .wrap(cors)
+         
             .service(
                 web::scope("/chaos")
                     // .route("/", web::get().to(index))
@@ -188,6 +193,7 @@ async fn main() -> std::io::Result<()> {
                         web::get().to(templates::fourofour::four_o_four),
                     ),
             )
+            .route("/version",  web::get().to(version))
             .route("/static/{file:.*}", web::get().to(static_media))
             .route("/icons/{file:.*}", web::get().to(icons))
             .route(
