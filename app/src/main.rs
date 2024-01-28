@@ -191,9 +191,9 @@ async fn main() -> std::io::Result<()> {
                     .route(
                         "/{tail:.*}",
                         web::get().to(templates::fourofour::four_o_four),
-                    ),
+                    )
+                    .route("/version",  web::get().to(version))
             )
-            .route("/version",  web::get().to(version))
             .route("/static/{file:.*}", web::get().to(static_media))
             .route("/icons/{file:.*}", web::get().to(icons))
             .route(
