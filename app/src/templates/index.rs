@@ -28,7 +28,7 @@ pub async fn index(req: HttpRequest, routes: HashMap<&'static str, Route>) -> Re
         None => "404".to_string(),
     };
     let imageUrl = match current_route {
-        Some(route) => format!("https://matf.dev{}/icons/{}.png", SCOPE, path),
+        Some(route) => format!("https://matf.dev/chaos/icons/{}.png", path),
         None => "https://matf.dev/static/404.png".to_string(),
     };
 
