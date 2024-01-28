@@ -185,7 +185,11 @@ async fn main() -> std::io::Result<()> {
             .allowed_header(http::header::CONTENT_TYPE)
             .max_age(3600);
 
-        App::new().wrap(cors).service(
+        App::new().wrap(cors)
+        
+        .route("/static/{file:.*}", web::get().to(static_media))
+        .route("/icons/{file:.*}", web::get().to(icons))
+        .service(
             web::scope(scope)
                 // .route("/", web::get().to(index))
                 .route("/version", web::get().to(version))
@@ -214,8 +218,7 @@ async fn main() -> std::io::Result<()> {
                     web::get().to(templates::fourofour::four_o_four),
                 ),
         )
-        .route("/static/{file:.*}", web::get().to(static_media))
-        .route("/icons/{file:.*}", web::get().to(icons))
+        
         // add localhost-key.pem and localhost.pem to root
         // .service(fs::Files::new("/", "./static/").index_file("index.html"))
     });
