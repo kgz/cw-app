@@ -171,29 +171,29 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(cors)
          
-            .service(
-                web::scope("/chaos")
-                    // .route("/", web::get().to(index))
-                    .route(
-                        "/{path}",
-                        web::get().to(|req: HttpRequest| {
-                            templates::index::index(req, data::routes::get_routes())
-                        }),
-                    )
-                    .route(
-                        "/",
-                        web::get().to(|req: HttpRequest| {
-                            templates::index::index(req, data::routes::get_routes())
-                        }),
-                    )
-                    // static media
-                    // dummy data
-                    .route(
-                        "/{tail:.*}",
-                        web::get().to(templates::fourofour::four_o_four),
-                    )
-                    .route("/version",  web::get().to(version))
-            )
+            // .service(
+                // web::scope("/chaos")
+                //     // .route("/", web::get().to(index))
+                // )
+                .route(
+                    "/{path}",
+                    web::get().to(|req: HttpRequest| {
+                        templates::index::index(req, data::routes::get_routes())
+                    }),
+                )
+                .route(
+                    "/",
+                    web::get().to(|req: HttpRequest| {
+                        templates::index::index(req, data::routes::get_routes())
+                    }),
+                )
+                // static media
+                // dummy data
+                .route(
+                    "/{tail:.*}",
+                    web::get().to(templates::fourofour::four_o_four),
+                )
+                .route("/version",  web::get().to(version))
             .route("/static/{file:.*}", web::get().to(static_media))
             .route("/icons/{file:.*}", web::get().to(icons))
             .route(
