@@ -57,6 +57,7 @@ pub async fn index(req: HttpRequest, routes: HashMap<&'static str, Route>) -> Re
 
                 @if current_route.is_some() {
                     // basic meta tags
+                    meta name="google-site-verification" content="2mR9DmrflrghmJOw7PGwClFKoP_cgw1_u6wmdl7tJD8" {}
                     meta name="description" content=(current_route.unwrap().description) {}
                     meta name="keywords" content=(keywords) {}
                     meta name="author" content="Mat Frayne" {}

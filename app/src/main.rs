@@ -222,7 +222,8 @@ async fn main() -> std::io::Result<()> {
                     .route(
                         "/{tail:.*}",
                         web::get().to(templates::fourofour::four_o_four),
-                    ),
+                    )
+                    .route("/robots.txt", web::get().to(templates::robots::robots))
             )
 
         // add localhost-key.pem and localhost.pem to root
